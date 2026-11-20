@@ -149,6 +149,7 @@ def run_download_job(job_id: str, url: str, quality: int):
         "postprocessor_hooks": [postprocessor_hook],
         "retries": 2,
         "fragment_retries": 2,
+        "extractor_args": {"youtube": {"player_client": ["tv", "android", "web"]}},
     }
 
     try:
@@ -172,6 +173,8 @@ def run_download_job(job_id: str, url: str, quality: int):
             raise DownloadError("file_too_large")
 
         logger.warning("download_failed error_type=download_error")
+        if "confirm you" in message and ("bot" in message or "not a bot" in message):
+            raise DownloadError("bot_check")
         if "private" in message or "login" in message or "log in" in message or "sign in" in message:
             raise DownloadError("private_video")
         if "not available" in message or "unavailable" in message or "removed" in message:

@@ -21,6 +21,7 @@ def _build_opts() -> dict:
         "noplaylist": True,
         "skip_download": True,
         "socket_timeout": ANALYZE_TIMEOUT,
+        "extractor_args": {"youtube": {"player_client": ["tv", "android", "web"]}},
     }
 
 
@@ -135,6 +136,8 @@ def analyze_video(url: str) -> dict:
     except yt_dlp.utils.DownloadError as exc:
         message = str(exc).lower()
         logger.warning("analyze_failed error_type=download_error")
+        if "confirm you" in message and ("bot" in message or "not a bot" in message):
+            raise AnalysisError("bot_check")
         if "private" in message or "login" in message or "log in" in message or "sign in" in message:
             raise AnalysisError("private_video")
         if "live" in message and "not currently live" not in message:
