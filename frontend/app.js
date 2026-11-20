@@ -15,7 +15,7 @@ const ERROR_MESSAGES = {
   queue_full: 'الخادم مشغول بعدد كبير من طلبات التنزيل حاليًا. حاول بعد قليل.',
   file_expired: 'انتهت صلاحية هذا الملف. يرجى إعادة تجهيز التحميل.',
   file_not_ready: 'الملف غير جاهز بعد.',
-  job_not_found: 'تعذر العثور على هذه المهمة.',
+  job_not_found: 'لم تعد هذه المهمة موجودة، على الأرجح بسبب إعادة تشغيل الخادم (نوم بعد فترة عدم نشاط). يرجى تجهيز التحميل من جديد.',
   interrupted_by_restart: 'تم إيقاف الخادم أثناء معالجة هذا الطلب. حاول مرة أخرى.',
   network_error: 'تعذر الاتصال بالخادم. تحقق من اتصالك بالشبكة وأن الخادم يعمل.',
   cancelled: 'تم إلغاء التنزيل.',
@@ -433,6 +433,8 @@ els.saveBtn.addEventListener('click', saveFile);
 
   if (!data || !data.success) {
     clearSavedJobId();
+    state.job = { status: 'failed', error: (data && data.error) || 'job_not_found' };
+    renderJobState();
     return;
   }
 
@@ -456,3 +458,94 @@ els.saveBtn.addEventListener('click', saveFile);
 })();
 
 renderAnalyzeState();
+
+// --- PWA: install prompt (Android/Chromium), iOS instructions, service worker ---
+//
+// Installing VideoPocket only makes the interface itself open faster/offline
+// as an app shell. It does NOT make downloading new videos work offline —
+// analysis and downloads always require the server to be reachable.
+
+const installEls = {
+  installBtn: document.getElementById('installBtn'),
+  iosInstallPopover: document.getElementById('iosInstallPopover'),
+  iosInstallClose: document.getElementById('iosInstallClose'),
+};
+
+function isStandalone() {
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true
+  );
+}
+
+function isIOS() {
+  const ua = window.navigator.userAgent || '';
+  const isAppleTouch = /iPad|iPhone|iPod/.test(ua);
+  const isIPadOS = ua.includes('Macintosh') && 'ontouchend' in document;
+  return isAppleTouch || isIPadOS;
+}
+
+let deferredInstallPrompt = null;
+
+function showInstallButton() {
+  if (isStandalone()) return;
+  installEls.installBtn.classList.remove('hidden');
+}
+
+function hideInstallButton() {
+  installEls.installBtn.classList.add('hidden');
+}
+
+function showIosInstallPopover() {
+  installEls.iosInstallPopover.classList.remove('hidden');
+}
+
+function hideIosInstallPopover() {
+  installEls.iosInstallPopover.classList.add('hidden');
+}
+
+if (!isStandalone()) {
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    showInstallButton();
+  });
+
+  if (isIOS()) {
+    showInstallButton();
+  }
+}
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  hideInstallButton();
+});
+
+installEls.installBtn.addEventListener('click', async () => {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    if (choice && choice.outcome === 'accepted') {
+      hideInstallButton();
+    }
+    return;
+  }
+
+  if (isIOS()) {
+    showIosInstallPopover();
+  }
+});
+
+installEls.iosInstallClose.addEventListener('click', hideIosInstallPopover);
+installEls.iosInstallPopover.addEventListener('click', (e) => {
+  if (e.target === installEls.iosInstallPopover) hideIosInstallPopover();
+});
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {
+      // Service worker registration failure must never block Analyze/Download.
+    });
+  });
+}

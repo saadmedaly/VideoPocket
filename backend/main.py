@@ -5,6 +5,7 @@ from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, field_validator
 
 import jobstore
@@ -185,3 +186,11 @@ def download_file(job_id: str, request: Request, background_tasks: BackgroundTas
     )
     response.headers["Accept-Ranges"] = "bytes"
     return response
+
+
+# Static frontend mounted last, after every /api/* and /health route above,
+# so it never shadows them — StaticFiles only ever matches what no earlier
+# route claimed first.
+_FRONTEND_DIR = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "frontend"))
+if os.path.isdir(_FRONTEND_DIR):
+    app.mount("/", StaticFiles(directory=_FRONTEND_DIR, html=True), name="frontend")

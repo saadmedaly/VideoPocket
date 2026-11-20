@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VideoPocket</title>
 <meta name="theme-color" content="#0f1115">
+<meta name="description" content="نزّل فيديوهات يوتيوب العامة بصيغة MP4 مع الصوت">
 <link rel="stylesheet" href="styles.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VideoPocket">
 </head>
 <body>
 <div class="container">
@@ -17,8 +24,16 @@
       </div>
       <span class="brand-name">VideoPocket</span>
     </div>
+    <button id="installBtn" type="button" class="btn btn-secondary install-btn hidden">تثبيت التطبيق</button>
     <p class="app-subtitle">نزّل فيديوهات يوتيوب العامة إلى هاتفك بصيغة MP4 مع الصوت</p>
   </header>
+
+  <div id="iosInstallPopover" class="ios-install-popover hidden" role="dialog" aria-modal="true">
+    <div class="ios-install-card">
+      <button id="iosInstallClose" type="button" class="ios-install-close" aria-label="إغلاق">✕</button>
+      <p class="ios-install-text">لتثبيت VideoPocket على آيفون: اضغط زر المشاركة <strong>Share</strong> في المتصفح، ثم اختر <strong>"Add to Home Screen" (إضافة إلى الشاشة الرئيسية)</strong>.</p>
+    </div>
+  </div>
 
   <div class="card">
     <label class="field-label" for="urlInput">رابط الفيديو</label>

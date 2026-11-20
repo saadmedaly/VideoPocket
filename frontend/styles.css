@@ -68,6 +68,53 @@ header.app-header {
   font-weight: 700;
 }
 
+.install-btn {
+  margin: 8px auto 4px;
+  display: block;
+  width: auto;
+  padding: 8px 18px;
+  font-size: 13px;
+}
+
+.ios-install-popover {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 50;
+}
+
+.ios-install-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px 16px 0 0;
+  padding: 20px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 0 0 0;
+}
+
+.ios-install-close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.ios-install-text {
+  font-size: 14px;
+  line-height: 1.8;
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
 .app-subtitle {
   color: var(--text-muted);
   font-size: 14px;
