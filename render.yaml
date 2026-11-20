@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: videopocket
+    runtime: docker
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: MAX_VIDEO_DURATION
+        value: "10800"
+      - key: MAX_DOWNLOAD_SIZE
+        value: "1610612736"
+      - key: DOWNLOAD_TIMEOUT
+        value: "2700"
+      - key: MAX_QUEUE_SIZE
+        value: "10"
+      - key: DOWNLOAD_WORKERS
+        value: "1"
+      - key: MIN_FREE_DISK_SPACE
+        value: "1073741824"
+      - key: FILE_RETENTION_SECONDS
+        value: "3600"
+      - key: CLEANUP_INTERVAL_SECONDS
+        value: "300"
+    healthCheckPath: /health
