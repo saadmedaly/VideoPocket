@@ -2,6 +2,7 @@ import logging
 import os
 
 from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, field_validator
@@ -67,6 +68,14 @@ class CreateJobRequest(BaseModel):
 
 def error_response(status_code: int, error: str) -> JSONResponse:
     return JSONResponse(status_code=status_code, content={"success": False, "error": error})
+
+
+@app.exception_handler(RequestValidationError)
+def handle_validation_error(request: Request, exc: RequestValidationError):
+    for err in exc.errors():
+        if "unsupported_quality" in str(err.get("msg", "")):
+            return error_response(400, "unsupported_quality")
+    return error_response(400, "invalid_request")
 
 
 @app.get("/health")
