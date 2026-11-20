@@ -7,3 +7,13 @@ backend/jobs.sqlite3
 backend/.env
 backend/*.log
 frontend/*.log
+
+proxy/.venv/
+proxy/__pycache__/
+proxy/*.pyc
+proxy/*.log
+
+logs/
+*.log
+.claude/
+

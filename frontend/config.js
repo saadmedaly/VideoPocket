@@ -1,6 +1,8 @@
 // Single source of truth for the backend API base URL.
-// Local development (served from 127.0.0.1/localhost) talks to the local backend.
-// On the phone over Wi-Fi, this page is opened via the computer's LAN IP, so
-// window.location.hostname is already that IP — we reuse it for the API host.
-const API_PORT = 8200;
-const API_BASE_URL = `http://${window.location.hostname}:${API_PORT}`;
+//
+// Relative paths ("" base) so the same build works whether this page is
+// served directly by the dev static server, through the local reverse
+// proxy (one origin for everything), or through the public Cloudflare
+// Tunnel URL — in every case /api/* resolves against whatever origin the
+// page itself was loaded from, with no hardcoded host or port.
+const API_BASE_URL = '';
