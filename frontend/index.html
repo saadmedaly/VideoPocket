@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VideoPocket</title>
+<meta name="theme-color" content="#0f1115">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 7v10l8-5-8-5z" fill="white"></path></svg>
+      </div>
+      <span class="brand-name">VideoPocket</span>
+    </div>
+    <p class="app-subtitle">نزّل فيديوهات يوتيوب العامة إلى هاتفك بصيغة MP4 مع الصوت</p>
+  </header>
+
+  <div class="card">
+    <label class="field-label" for="urlInput">رابط الفيديو</label>
+    <form id="analyzeForm" class="url-row" novalidate>
+      <input id="urlInput" type="text" inputmode="url" autocomplete="off" class="url-input"
+             placeholder="مثال: https://www.youtube.com/watch?v=xxxxxxxxxxx">
+      <button id="analyzeBtn" type="submit" class="btn">عرض الفيديو</button>
+    </form>
+    <div class="example-hint">يدعم روابط youtube.com و youtu.be و shorts فقط.</div>
+  </div>
+
+  <div id="loadingBox" class="card hidden">
+    <div class="status-box">
+      <div class="status-row">
+        <div class="spinner"></div>
+        <span id="loadingText" class="status-text">جارٍ جلب معلومات الفيديو...</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="errorBox" class="card hidden">
+    <div class="error-box">
+      <span class="error-icon">⚠</span>
+      <span id="errorText" class="error-text"></span>
+    </div>
+    <div class="actions-row" style="margin-top:12px;">
+      <button id="retryAnalyzeBtn" type="button" class="btn btn-secondary btn-full">محاولة مجددًا</button>
+    </div>
+  </div>
+
+  <div id="resultCard" class="card result-card hidden">
+    <div class="result-top">
+      <div class="thumb-wrap">
+        <img id="videoThumb" class="thumb-img hidden" alt="">
+        <span id="videoDuration" class="thumb-duration"></span>
+      </div>
+      <div class="result-info">
+        <p id="videoTitle" class="video-title"></p>
+        <p id="videoAuthor" class="video-author"></p>
+      </div>
+    </div>
+
+    <div class="quality-section">
+      <span class="quality-label">اختر الجودة:</span>
+      <div id="qualityGrid" class="quality-grid"></div>
+      <span class="size-disclaimer">الحجم تقديري وقد يختلف عن الحجم الفعلي.</span>
+    </div>
+
+    <button id="prepareBtn" type="button" class="btn btn-full">تجهيز التحميل</button>
+  </div>
+
+  <div id="jobBox" class="card hidden">
+    <div class="status-box">
+      <div class="status-row">
+        <div id="jobSpinner" class="spinner"></div>
+        <span id="jobStatusText" class="status-text">في الانتظار...</span>
+      </div>
+      <div id="progressWrap" class="hidden">
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill" style="width:0%"></div>
+        </div>
+        <div class="progress-meta">
+          <span id="progressPercent"></span>
+          <span id="progressSpeedEta"></span>
+        </div>
+      </div>
+    </div>
+    <div class="actions-row" style="margin-top:12px;">
+      <button id="cancelJobBtn" type="button" class="btn btn-danger btn-full">إلغاء</button>
+    </div>
+  </div>
+
+  <div id="jobErrorBox" class="card hidden">
+    <div class="error-box">
+      <span class="error-icon">⚠</span>
+      <span id="jobErrorText" class="error-text"></span>
+    </div>
+    <div class="actions-row" style="margin-top:12px;">
+      <button id="retryJobBtn" type="button" class="btn btn-secondary btn-full">محاولة مجددًا</button>
+    </div>
+  </div>
+
+  <div id="readyBox" class="card hidden">
+    <div class="success-box">
+      <div class="success-title">
+        <span>✓</span>
+        <span>الفيديو جاهز للحفظ</span>
+      </div>
+      <p id="expiryNote" class="expiry-note"></p>
+    </div>
+    <button id="saveBtn" type="button" class="btn btn-full" style="margin-top:12px;">حفظ الفيديو</button>
+    <p class="save-hint">
+      إذا فتح المتصفح الفيديو بدل تنزيله، اضغط مطولًا على الفيديو واختر "تنزيل"، أو استخدم زر المشاركة ثم "حفظ الفيديو".
+      على آيفون قد يتم الحفظ في تطبيق "الملفات" وليس "الصور" مباشرة.
+    </p>
+  </div>
+
+  <section class="supported-note">
+    <p>يدعم فيديوهات يوتيوب العامة فقط — فيديوهات طويلة ضمن الموارد المتاحة. لا يدعم القوائم أو البث المباشر أو المحتوى الخاص.</p>
+  </section>
+
+  <footer class="app-footer">
+    <div>للاستخدام الشخصي بفيديوهات تملكها أو لديك إذن بتنزيلها فقط.</div>
+    <div>VideoPocket © 2026</div>
+  </footer>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
